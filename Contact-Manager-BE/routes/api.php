@@ -12,6 +12,7 @@ Route::group(["middleware" => "auth:api"], function(){
         Route::post("refresh", [AuthController::class, "refresh"]);
         Route::post("addContact", [ContactController::class, "addContact"]);
         Route::get("getAllContacts", [ContactController::class, "getAllContacts"]);
+        Route::get("getUserContacts", [ContactController::class, "getUserContacts"]);
     });
 
 });

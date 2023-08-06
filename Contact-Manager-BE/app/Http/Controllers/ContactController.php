@@ -36,8 +36,19 @@ class ContactController extends Controller
         $contacts = Contact::all();
         return response()->json([
             'status' => 'success',
-            'message' => 'contacts recieved',
+            'message' => 'contacts retieved',
             'user' => $contacts,
         ]);   
     }
+    public function getUserContacts(){
+        $user = Auth::user();
+        $id = $user->id;
+        $contacts = Contact::where('user_id', $id)->get();
+        return response()->json([
+            'status' => 'success',
+            'message' => 'User contacts retrieved',
+            'user' => $contacts,
+        ]);   
+    }
+    
 }
