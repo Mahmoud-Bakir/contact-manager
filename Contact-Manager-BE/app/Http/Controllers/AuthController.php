@@ -6,8 +6,9 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use App\Models\User;
 
-class AuthController extends Controller
-{
+class AuthController extends Controller{
+
+
     public function unauthorized(Request $request){
         return response()->json([
             'status' => 'Error',
@@ -45,12 +46,13 @@ class AuthController extends Controller
             'email' => 'required|string|email|max:255|unique:users',
             'password' => 'required|string|min:6',
         ]);
+        $user = new User; 
+        $user->name = $request->name; 
+        $user->email = $request->email; 
+        $user->password = Hash::make($request->password);
+        $user->save();
 
-        $user = User::create([
-            'name' => $request->name,
-            'email' => $request->email,
-            'password' => Hash::make($request->password),
-        ]);
+
 
         $token = Auth::login($user);
         $user->token = $token;
@@ -62,24 +64,21 @@ class AuthController extends Controller
 
     }
 
-    public function logout()
-    {
+    public function logout(){
         Auth::logout();
         return response()->json([
             'status' => 'success',
             'message' => 'Successfully logged out',
         ]);
     }
+    
+    public function refresh() {
+        $user = Auth::user();
+        $user->token = Auth::refresh();
 
-    public function refresh()
-    {
         return response()->json([
             'status' => 'success',
-            'user' => Auth::user(),
-            'authorisation' => [
-                'token' => Auth::refresh(),
-                'type' => 'bearer',
-            ]
+            'data' => $user
         ]);
     }
 
